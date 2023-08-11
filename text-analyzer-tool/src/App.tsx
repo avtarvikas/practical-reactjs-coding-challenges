@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import ResultBox from './components/ResultBox'
 import TextArea from './components/TextArea'
+import { pronouns } from './data/pronouns'
 
 const App = () => {
   const [value, setValue] = useState('')
@@ -47,31 +48,43 @@ const App = () => {
     let sentenceCount = 0;
     let longestWord = ''
 
+    let noOfPronouns = 0
+
+    let usedPronouns: any = []
+
     lines.forEach(((line: string) => {
       if (line.length > 0) {
         validatedParagraphs.push(line)
-        const wordsArray = line.split(" ").filter((w) => w.length > 1).sort((a, b) => b.length - a.length);
+        const wordsArray = line.trim().split(/\s+/)
 
+        const validatedWords: any = []
+        wordsArray.forEach((w) => {
+          const finalWord = w.replace('!', '').replace('?', '').replace('.', '').replace(',', '').trim()
 
-        if (wordsArray.length > 0) {
-          const tempLongestWord = wordsArray[0].replace('!', '').replace('?', '').replace('.', '').replace(',', '')
+          if (pronouns.indexOf(finalWord) > -1 && usedPronouns.indexOf(finalWord) < 0) {
+            usedPronouns.push(finalWord)
+            noOfPronouns += 1
+          }
+          validatedWords.push(finalWord)
+
+        })
+
+        if (validatedWords.length > 0) {
+          const tempLongestWord = validatedWords[0]
           if (tempLongestWord.length > longestWord.length) {
             longestWord = tempLongestWord
           }
         }
 
-        wordCount += wordsArray.length
+        wordCount += validatedWords.length
 
 
-        const sentenceArray = line.split("[?!.]+")
+        const sentenceArray = line.replace("?", "|").replace(".", "|").replace("!", "|").split("|").filter((s) => s.length > 0)
         sentenceCount += sentenceArray.length
       }
     }));
 
-
     setLongestWord(longestWord);
-
-
 
     let totalReadingTime = (60 / 225 * wordCount) / 60
 
@@ -98,7 +111,7 @@ const App = () => {
       },
       {
         title: 'Pronouns',
-        value: 0,
+        value: noOfPronouns,
       }]
     )
   }, [value])

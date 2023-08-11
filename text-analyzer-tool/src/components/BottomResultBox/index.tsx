@@ -18,7 +18,7 @@ const BottomResultBox = ({ longestWord, readingTime }: { longestWord: string, re
     setBottomResultBar([
       {
         title: 'Average Reading Time:',
-        value: (readingTime + 1).toString(),
+        value: `~${readingTime + 1} minute`,
       },
       {
         title: 'Longest word:',
