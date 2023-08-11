@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react'
 import './index.scss'
 
-const BottomResultBox = () => {
-  const bottomResultBar = [
+const BottomResultBox = ({ longestWord, readingTime }: { longestWord: string, readingTime: number }) => {
+
+  const [bottomResultBar, setBottomResultBar] = useState([
     {
       title: 'Average Reading Time:',
       value: '-',
@@ -10,7 +12,20 @@ const BottomResultBox = () => {
       title: 'Longest word:',
       value: '-',
     },
-  ]
+  ])
+
+  useEffect(() => {
+    setBottomResultBar([
+      {
+        title: 'Average Reading Time:',
+        value: (readingTime + 1).toString(),
+      },
+      {
+        title: 'Longest word:',
+        value: longestWord,
+      },
+    ])
+  }, [longestWord, readingTime])
 
   return (
     <div className="bottom-result-bar">
